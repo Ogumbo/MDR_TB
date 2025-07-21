@@ -1,0 +1,79 @@
+# MDR_TB
+MDR_PILELINE
+########################## CONCATENATION OF GZIPPED FILES BARCODE 01 TO BARCODE 024
+
+
+for i in $(seq -w 1 24); do zcat MDR-TB_Fastq/barcode$i/*.fastq.gz > concatenated_fastq/concatenated_barcode$i.fastq; done
+
+
+
+
+NANOFILT SET TO ABOVE 10% AND ABOVE 500 READS
+
+for i in $(seq -w 1 24); do cat concatenated_fastq/concatenated_barcode${i}.fastq | NanoFilt -q 10 -l 500 > nanofilt_filtered/barcode${i}_filtered.fastq; done
+
+
+
+
+REFERENCE BASED FLY ASSEMBLY
+
+
+DOWLOAD RFERENCE FASTA
+
+
+MAP REFERENCE FASTA
+inimap2 -d mtb_ref_genome.mmi mtb_ref_genome.fna
+
+
+
+
+GENOME POLISHING USING MEDAKKA
+
+
+
+for i in $(seq -w 1 24); do   medaka_consensus     -i nanofilt_filtered/barcode${i}_filtered.fastq     -d mtb_ref_genome/mtb_ref_genome.fna     -o medaka_polished/barcode${i}; done
+
+
+
+
+
+GENOME ANNOTATION USING PROKKA
+
+
+for i in $(seq -w 1 24); do prokka --outdir prokka_annotated/barcode${i} --prefix barcode${i} medaka_polished/barcode${i}/consensus.fasta; done
+
+
+
+
+TAXONOMIC ID USING KRAKEN 2
+
+
+
+MLST 
+
+
+
+AMR
+
+
+
+VIRULENCE
+
+
+
+PLASMIDS
+
+
+
+ALIGHNMENT
+
+
+
+PHYLOGENY
+
+
+
+
+
+
+
